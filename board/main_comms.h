@@ -13,7 +13,8 @@ static int get_health_pkt(void *dat) {
   health->current_pkt = (uint16_t)MIN(current_board->read_current_mA(), 0xFFFFU);
 
   health->flags_pkt = 0U;
-  health->flags_pkt |= harness_check_ignition() ? HEALTH_FLAG_IGNITION_LINE : 0U;
+  // fork: this board holds the ignition voltage line high permanently, so the voltage-based
+  // flag would always read on - never report it, CAN-based ignition is the only valid source
   health->flags_pkt |= ignition_can ? HEALTH_FLAG_IGNITION_CAN : 0U;
   health->flags_pkt |= controls_allowed ? HEALTH_FLAG_CONTROLS_ALLOWED : 0U;
   health->flags_pkt |= power_save_enabled ? HEALTH_FLAG_POWER_SAVE_ENABLED : 0U;

@@ -120,7 +120,8 @@ static void enter_stop_mode(void) {
   EXTI->PR1 = (1U << 1) | (1U << 4) | can_exti_line;
 
   // reset if ignition just came on before going to sleep
-  if (harness_check_ignition()) {
+  // fork: voltage line is permanently high on this board, so only CAN-based ignition is valid here
+  if (ignition_can) {
     NVIC_SystemReset();
   }
 

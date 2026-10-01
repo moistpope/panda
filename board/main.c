@@ -172,7 +172,9 @@ static void tick_handler(void) {
       const bool recent_heartbeat = heartbeat_counter == 0U;
 
       // tick drivers at 1Hz
-      bool started = harness_check_ignition() || ignition_can;
+      // fork: this board holds the ignition voltage line high permanently, so voltage-based
+      // detection (harness_check_ignition) never reports off — CAN-based ignition only
+      bool started = ignition_can;
       bootkick_tick(started, recent_heartbeat);
 
       // increase heartbeat counter and cap it at the uint32 limit
